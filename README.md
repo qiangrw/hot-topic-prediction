@@ -9,4 +9,6 @@ The hot topic detection project using acl data.
 A pairwise learning to rank method for topic ranking.
 
 ## topic
-The topics need to be predicted.
+The topics need to be predicted. Labels can be genrated as:
+> * perl gen\_label.pl ../release/2013/acl.txt ../topic/acl01-10.matrix 2011
+> * perl gen\_label.pl ../release/2013/acl.txt ../topic/acl02-11.matrix 2012
