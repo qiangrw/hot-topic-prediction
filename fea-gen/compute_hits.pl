@@ -61,7 +61,7 @@ foreach (keys $r) {
     chomp($string);
     $string =~ s/^\s+//;
     $string =~ s/\s+$//;
-    my @elements = split /\s+/, $string;
+    my @elements = split /\s+/, substr($string, 0, -1);
     foreach (0..$#articles) {
         print OUT $articles[$_], "\t", $elements[$_+2], "\n";
     }

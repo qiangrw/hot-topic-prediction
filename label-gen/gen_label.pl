@@ -22,7 +22,7 @@ while (<MR>) {
 }
 close MR;
 print "$topic_no topics detected\n";
-for(0..$topic_no-1) {
+foreach(0..$topic_no-1) {
     $topic_weight[$_] = 0;
 }
 print "topic weight scalar = ", scalar @topic_weight, "\n";
