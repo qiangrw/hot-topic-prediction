@@ -5,7 +5,7 @@ The hot topic detection project using acl data.
 The topics need to be predicted. First, we need to join paper id and topic distribution.
 > * run.sh 
 
- ## label-gen
+## label-gen
 Labels can be genrated as:
 > * perl gen\_label.pl ../release/2013/acl.txt ../topic/acl01-10.matrix 2011
 > * perl gen\_label.pl ../release/2013/acl.txt ../topic/acl02-11.matrix 2012
