@@ -36,6 +36,7 @@ foreach (0..$#labels) {
 #push @topic_features, "" foreach (@labels);
 
 my @files = glob ("score/year$year*");
+my $feature_idx = 1;
 foreach (@files) {
     print "prcess score file : $_\n";
     
@@ -56,8 +57,9 @@ foreach (@files) {
     }
 
     foreach (0..$#topic_features) {
-        $topic_features[$_] .= $_+1 . ":" . $topic_weight[$_] . " "
+        $topic_features[$_] .= ($feature_idx) . ":" . $topic_weight[$_] . " "
     }
+    $feature_idx += 1;
 
     close FH;
 }
