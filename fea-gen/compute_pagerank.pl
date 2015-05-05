@@ -9,10 +9,13 @@ my $usage = "perl $0 acl.txt to_year\n";
 my $input = shift @ARGV or die $usage;
 my $year = shift @ARGV or die $usage;
 
+my $start_year = $year == 2011 ? 1 : 2;     # 2001 / 2002
+my $end_year = $year == 2011 ? 11 : 12 ;    # 2011 / 2012
+
 my $pr = new Algorithm::PageRank;
 my @network = [];
 
-open FH, $input or die $usage;
+open FH, $input or die $!;
 my %article2id;
 my @articles;
 my $idx = 0;
@@ -24,11 +27,11 @@ while (<FH>) {
 
         if ($a =~ /[A-Z](\d+)-/) {
             $ayear = $1 + 0;
-            next unless int($ayear) >= 0 && int($ayear) <= 10;
+            next unless int($ayear) >= $start_year && int($ayear) <= $end_year;
         }
         if ($b =~ /[A-Z](\d+)-/) {
             $byear = $1 + 0;
-            next unless int($byear) >= 0 && int($byear) <= 10;
+            next unless int($byear) >= $start_year && int($byear) <= $end_year;
         }
         
         unless (defined $article2id{$a}) {
