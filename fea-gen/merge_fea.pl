@@ -23,11 +23,17 @@ open MR, $matrix or die $!;
 while (<MR>) {
     chomp;
     my ($pid, @topics) = split /\t/;
+    foreach (0..$#topics) {
+        if ($topics[$_] =~ m/nan/i) {
+            $topics[$_] = 0;
+        }
+    }
     $document_topic{$pid} = \@topics;
     $topic_no = scalar @topics;
 }
 close MR;
 
+print "topic no: $topic_no\n";
 my @topic_features;
 foreach (0..$#labels) {
     $topic_features[$_] = substr($labels[$_], 0, 1) . " qid:1 ";
@@ -47,11 +53,11 @@ foreach (@files) {
     open FH, $_ or die $!;
     while (<FH>) {
         chomp;
-        my ($pid, $score) = split /\t/;
+        my ($pid, $score) = split /\s+/;
         if (defined $document_topic{$pid}) {
             my @topics = @{$document_topic{$pid}};
             foreach (0..$#topics) {
-                $topic_weight[$_] += $topics[$_] * $score;
+                $topic_weight[$_] += $topics[$_] * 1.0 * $score;
             }
         } 
     }
