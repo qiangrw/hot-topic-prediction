@@ -1,4 +1,7 @@
 release/*
 .DS_Store
 *.res
+*.model
+*.prediction
 *.fea*
+fea-gen/backup-score/*
