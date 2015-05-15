@@ -10,7 +10,7 @@ my $input = shift @ARGV or die $usage;
 my $year = shift @ARGV or die $usage;
 
 my $start_year = $year == 2011 ? 1 : 2;     # 2001 / 2002
-my $end_year = $year == 2011 ? 11 : 12 ;    # 2011 / 2012
+my $end_year = $year == 2011 ? 10 : 11 ;    # 2011 / 2012
 
 my $pr = new Algorithm::PageRank;
 my @network = [];
@@ -51,12 +51,19 @@ while (<FH>) {
 close FH;
 
 $pr->graph(@network);
-$pr->iterate(100);
+$pr->iterate(10);
 my $r = $pr->result();
 
-print $r, "\n";
-$idx = 0;
-foreach (@articles) {
-    print "$idx\t$_\n";
-    $idx += 1;
+open OUT, ">score/year$year.pagerank";
+my $string = "" . $r;
+chomp($string);
+$string =~ s/^\s+//;
+$string =~ s/\s+$//;
+my ($start, $content, $end) = split /\n/, $string;
+$content = substr($content, 2, -1);
+print $content;
+my @elements = split /\s+/, $content;
+foreach (0..$#articles) {
+    print OUT $articles[$_], "\t", $elements[$_], "\n";
 }
+close OUT;   
