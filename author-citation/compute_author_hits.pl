@@ -85,7 +85,7 @@ foreach (keys $r) {
         my $author_name = $paper2author{$_};
         unless (defined $author_score{$author_name}) {
             #print "$author_name not defined\n";
-            $author_score{$author_name} = "nan"; 
+            $author_score{$author_name} = 0; 
         }
         print OUT $_, "\t", $author_score{$author_name}, "\n";
         # print $_, "\t$author_name\t", $author_score{$author_name}, "\n";
