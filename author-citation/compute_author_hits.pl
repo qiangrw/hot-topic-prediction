@@ -23,7 +23,7 @@ my $idx = 0;
 my ($a, $b);
 while (<FH>) {
     chomp;
-    if (m/(.+) ==> (.+)/g) {
+    if (m/(.+)\s+==>\s+(.+)/g) {
         my $a = $1;
         my $b = $2;
 
@@ -53,9 +53,11 @@ my $r = $h->result();
 open FH, $paperlist or die $!;
 my %paper2author;
 while (<FH>) {
+    chomp;
     my @elements = split /\t/;
-    print "ERROR in line $_\n" unless $#elements >= 1;
-    print "ERROR in line $_\n" if $elements[1] eq "";
+    # print "ERROR in line $_\n" unless $#elements >= 1;
+    next unless $#elements >= 1;
+    #  print "ERROR in line $_\n" if $elements[1] eq "";
     $paper2author{$elements[0]} = $elements[1];
 }
 close FH;
@@ -75,13 +77,18 @@ foreach (keys $r) {
         my $author_name = $authors[$_];
         my $score = $elements[$_];
         $author_score{$author_name} = $score;
+        # print $author_name, "\t", $score, "\n";
     }
 
     open OUT, ">", "../fea-gen/score/year$year.author.$_.hits";
     foreach (keys %paper2author) {
         my $author_name = $paper2author{$_};
-        $author_score{$author_name} = 0 unless defined $author_score{$author_name};
+        unless (defined $author_score{$author_name}) {
+            #print "$author_name not defined\n";
+            $author_score{$author_name} = "nan"; 
+        }
         print OUT $_, "\t", $author_score{$author_name}, "\n";
+        # print $_, "\t$author_name\t", $author_score{$author_name}, "\n";
     }
     close OUT;
 }
