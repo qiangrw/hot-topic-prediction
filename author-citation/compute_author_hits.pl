@@ -7,8 +7,9 @@ use PDL;
 use Algorithm::HITS;
 use Data::Dumper;
 
-my $usage = "perl $0 author_network year\n";
+my $usage = "perl $0 author_network paperlist year\n";
 my $input = shift @ARGV or die $usage;
+my $paperlist = shift @ARGV or die $usage;
 my $year = shift @ARGV or die $usage;
 
 my $h = new Algorithm::HITS;
@@ -21,6 +22,7 @@ my @authors;
 my $idx = 0;
 my ($a, $b);
 while (<FH>) {
+    chomp;
     if (m/(.+) ==> (.+)/g) {
         my $a = $1;
         my $b = $2;
@@ -45,11 +47,20 @@ while (<FH>) {
 close FH;
 
 $h->graph(@network);
-$h->iterate(1);
+$h->iterate(100);
 my $r = $h->result();
 
+open FH, $paperlist or die $!;
+my %paper2author;
+while (<FH>) {
+    my @elements = split /\t/;
+    print "ERROR in line $_\n" unless $#elements >= 1;
+    print "ERROR in line $_\n" if $elements[1] eq "";
+    $paper2author{$elements[0]} = $elements[1];
+}
+close FH;
+
 foreach (keys $r) {
-    open OUT, ">author$year.$_.hits";
     my $string = "" . $r->{$_};
     chomp($string);
     $string =~ s/\[//g;
@@ -57,8 +68,20 @@ foreach (keys $r) {
     $string =~ s/^\s+//;
     $string =~ s/\s+$//;
     my @elements = split m/\s+/s, $string;
+    my %author_score;
+
     foreach (0..$#authors) {
-        print OUT $authors[$_], "\t", $elements[$_], "\n";
+        #print OUT $authors[$_], "\t", $elements[$_], "\n";
+        my $author_name = $authors[$_];
+        my $score = $elements[$_];
+        $author_score{$author_name} = $score;
+    }
+
+    open OUT, ">", "../fea-gen/score/year$year.author.$_.hits";
+    foreach (keys %paper2author) {
+        my $author_name = $paper2author{$_};
+        $author_score{$author_name} = 0 unless defined $author_score{$author_name};
+        print OUT $_, "\t", $author_score{$author_name}, "\n";
     }
     close OUT;
 }
